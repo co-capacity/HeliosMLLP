@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Helios.Buffers;
@@ -37,7 +38,8 @@ namespace Helios.MLLP.Test
             List<IByteBuf> decodedMessages;
             Decoder.Decode(TestConnection, encodedMessages[0], out decodedMessages);
 
-            Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()));
+            Assert.AreEqual(1, decodedMessages.Count);
+            Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()), String.Format("'{0}' != '{1}'", Encoding.ASCII.GetString(binaryContent), Encoding.ASCII.GetString(decodedMessages[0].ToArray())));
         }
 
         [Test]
@@ -54,6 +56,7 @@ namespace Helios.MLLP.Test
             List<IByteBuf> decodedMessages;
             Decoder.Decode(TestConnection, encodedMessages[0], out decodedMessages);
 
+            Assert.AreEqual(1, decodedMessages.Count);
             Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()));
         }
 

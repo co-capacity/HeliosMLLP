@@ -19,7 +19,7 @@ namespace Helios.MLLP.Test
         [SetUp]
         public void SetUp()
         {
-            Encoder = MLLP.MLLPEncoder.Default;
+            Encoder = MLLPEncoder.Default;
             Decoder = SimpleMLLPDecoder.Default;
         }
 

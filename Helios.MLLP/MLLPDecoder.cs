@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Helios.Buffers;
 using Helios.Exceptions;
 using Helios.Net;
 using Helios.Serialization;
-using Helios.Tracing;
 
 namespace Helios.MLLP
 {
@@ -12,52 +10,39 @@ namespace Helios.MLLP
     /// Generic mllp decoder, use <see cref="SimpleMLLPDecoder"/> if you are only going to receive one message
     /// per request/response cycle.
     /// </summary>
-    public class MLLPDecoder : MessageDecoderBase
+    public class MLLPDecoder : MLLPDecoderBase
     {
-        private readonly byte _mllpFirstEndCharacter;
-        private readonly byte _mllpLastEndCharacter;
-        private readonly byte _mllpStartCharacter;
-
         public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
+            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 3)
         {
-            _mllpStartCharacter = mllpStartCharacter;
-            _mllpFirstEndCharacter = mllpFirstEndCharacter;
-            _mllpLastEndCharacter = mllpLastEndCharacter;
         }
 
-        public override void Decode(IConnection connection, IByteBuf buffer, out List<IByteBuf> decoded)
+
+        public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength) : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, minimiumMessageLength)
         {
-            decoded = new List<IByteBuf>();
-            var obj = Decode(connection, buffer);
-            while (obj != null)
-            {
-                decoded.Add(obj);
-                HeliosTrace.Instance.DecodeSucccess(1);
-                obj = Decode(connection, buffer);
-            } 
         }
 
-        private IByteBuf Decode(IConnection connection, IByteBuf input)
+        protected override IByteBuf Decode(IConnection connection, IByteBuf input)
         {
-            // we at least need to read our start character
-            if (input.ReadableBytes < 1) return null;
+            // we at least need to read our controll characters
+            if (input.ReadableBytes < MinimiumMessageLength) return null;
 
             input.MarkReaderIndex();
 
             // check start byte
-            if (!input.ReadByte().Equals(_mllpStartCharacter))
+            if (!input.ReadByte().Equals(MLLPStartCharacter))
             {
-                throw new CorruptedFrameException(string.Format("Message doesn't start with: {0}", _mllpStartCharacter));
+                throw new CorruptedFrameException(string.Format("Message doesn't start with: {0}", MLLPStartCharacter));
             }
 
             var startMessage = input.ReaderIndex;
             var length = input.ReadableBytes;
 
-            // search for our end characters
+            // search for our end characters, this part doesn't scale well with bigger messages.
             for (var i = 0; i < length; i++)
             {
-                if (input.ReadByte().Equals(_mllpFirstEndCharacter) && 
-                    input.GetByte(input.ReaderIndex).Equals(_mllpLastEndCharacter))
+                if (input.ReadByte().Equals(MLLPFirstEndCharacter) && 
+                    input.GetByte(input.ReaderIndex).Equals(MLLPLastEndCharacter))
                 {
                     var frame = ExtractFrame(connection, input, startMessage, i);
                     input.SkipBytes(1); // advance over our last character
@@ -72,16 +57,9 @@ namespace Helios.MLLP
             return null;
         }
 
-        private static IByteBuf ExtractFrame(IConnection connection, IByteBuf buffer, int index, int length)
-        {
-            var frame = connection.Allocator.Buffer(length);
-            frame.WriteBytes(buffer, index, length);
-            return frame;
-        }
-
         public override IMessageDecoder Clone()
         {
-            return new MLLPDecoder(_mllpStartCharacter, _mllpFirstEndCharacter, _mllpLastEndCharacter);
+            return new MLLPDecoder(MLLPStartCharacter, MLLPFirstEndCharacter, MLLPLastEndCharacter);
         }
 
         #region Static methods

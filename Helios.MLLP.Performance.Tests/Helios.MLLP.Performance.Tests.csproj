@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F0C05FE3-4F71-4B86-A60E-9F6760D34183}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{A855FDF9-3B09-4832-ADBC-EC63F41444D2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Helios.MLLP</RootNamespace>
-    <AssemblyName>Helios.MLLP</AssemblyName>
+    <RootNamespace>Helios.MLLP.Performance.Tests</RootNamespace>
+    <AssemblyName>Helios.MLLP.Performance.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,23 +29,37 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Helios.MLLP.Performance.Tests.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Helios">
       <HintPath>..\packages\Helios.1.4.0\lib\net45\Helios.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MLLPDecoderBase.cs" />
-    <Compile Include="MLLPEncoder.cs" />
-    <Compile Include="MLLPDecoder.cs" />
-    <Compile Include="SimpleMLLPDecoder.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Helios.MLLP.nuspec" />
+    <ProjectReference Include="..\Helios.MLLP.Test\Helios.MLLP.Test.csproj">
+      <Project>{8CEE6E64-A672-4FF8-AF95-2ECC02EAB31B}</Project>
+      <Name>Helios.MLLP.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helios.MLLP\Helios.MLLP.csproj">
+      <Project>{f0c05fe3-4f71-4b86-a60e-9f6760d34183}</Project>
+      <Name>Helios.MLLP</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
