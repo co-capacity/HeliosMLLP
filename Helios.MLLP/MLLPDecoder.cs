@@ -38,7 +38,9 @@ namespace Helios.MLLP
             var startMessage = input.ReaderIndex;
             var length = input.ReadableBytes;
 
-            // search for our end characters, this part doesn't scale well with bigger messages.
+            // search for our end characters, this is performance hotspot 
+            // TODO: first we should skip MinimiumMessageLength
+            // TODO: find other ways to speed up this search
             for (var i = 0; i < length; i++)
             {
                 if (input.ReadByte().Equals(MLLPFirstEndCharacter) && 
