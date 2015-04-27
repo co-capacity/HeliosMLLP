@@ -58,6 +58,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DummyConnection.cs" />
+    <Compile Include="OptimizedDecoderTests.cs" />
     <Compile Include="MultipleMessageDecoderTests.cs" />
     <Compile Include="SingleMessageDecoderTests.cs" />
     <Compile Include="EncoderTests.cs" />

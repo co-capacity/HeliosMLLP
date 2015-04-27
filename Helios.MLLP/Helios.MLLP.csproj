@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MLLPDecoderOptimized.cs" />
     <Compile Include="MLLPDecoderBase.cs" />
     <Compile Include="MLLPEncoder.cs" />
     <Compile Include="MLLPDecoder.cs" />
