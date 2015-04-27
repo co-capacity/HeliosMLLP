@@ -18,7 +18,7 @@ namespace Helios.MLLP
 
         protected override IByteBuf Decode(IConnection connection, IByteBuf input)
         {
-            if (input.ReadableBytes < MinimiumMessageLength) return null;
+            if (input.ReadableBytes < MinimiumMessageLength + 3) return null;
 
             input.MarkReaderIndex();
 

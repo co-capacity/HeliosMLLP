@@ -15,15 +15,15 @@ namespace Helios.MLLP
         protected readonly int MinimiumMessageLength;
 
         protected MLLPDecoderBase(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
-            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 3)
+            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
         {
         }
 
         protected MLLPDecoderBase(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength)
         {
-            if (minimiumMessageLength < 3)
+            if (minimiumMessageLength < 0)
             {
-                throw new ArgumentOutOfRangeException("minimiumMessageLength", "minimum of 3 for control characters");
+                throw new ArgumentOutOfRangeException("minimiumMessageLength", "should be zero or bigger");
             }
             MLLPStartCharacter = mllpStartCharacter;
             MLLPFirstEndCharacter = mllpFirstEndCharacter;

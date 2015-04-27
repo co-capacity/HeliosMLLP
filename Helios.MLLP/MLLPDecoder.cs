@@ -13,7 +13,7 @@ namespace Helios.MLLP
     public class MLLPDecoder : MLLPDecoderBase
     {
         public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
-            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 3)
+            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
         {
         }
 
@@ -25,8 +25,9 @@ namespace Helios.MLLP
         protected override IByteBuf Decode(IConnection connection, IByteBuf input)
         {
             // we at least need to read our controll characters
-            if (input.ReadableBytes < MinimiumMessageLength) return null;
+            if (input.ReadableBytes < MinimiumMessageLength + 3) return null;
 
+            // mark the start of our frame
             input.MarkReaderIndex();
 
             // check start byte
@@ -52,13 +53,18 @@ namespace Helios.MLLP
                 }
             }
 
-
+            // we have to reset as our frame could get compacted away.
             input.ResetReaderIndex();
 
             // not a complete frame
             return null;
         }
 
+        /// <summary>
+        /// Called for every new connection
+        /// <see cref="Helios.Reactor.Response.ReactorResponseChannel"/>
+        /// </summary>
+        /// <returns></returns>
         public override IMessageDecoder Clone()
         {
             return new MLLPDecoder(MLLPStartCharacter, MLLPFirstEndCharacter, MLLPLastEndCharacter);
