@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BaseMLLPTests.cs" />
     <Compile Include="DummyConnection.cs" />
     <Compile Include="MultipleMessageDecoderTests.cs" />
     <Compile Include="SingleMessageDecoderTests.cs" />

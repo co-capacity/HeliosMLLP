@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Helios.Buffers;
 using Helios.Exceptions;
 using Helios.Net;
 using Helios.Serialization;
-using Helios.Tracing;
 
 namespace Helios.MLLP
 {
@@ -12,46 +10,33 @@ namespace Helios.MLLP
     /// Use this decoder if you are sure only ONE message will be send per request/response cycle.
     /// It will be faster for large messages then <see cref="MLLPDecoder"/> 
     /// </summary>
-    public class SimpleMLLPDecoder : MessageDecoderBase
+    public class SimpleMLLPDecoder : MLLPDecoderBase
     {
-        private readonly byte _mllpFirstEndCharacter;
-        private readonly byte _mllpLastEndCharacter;
-        private readonly byte _mllpStartCharacter;
-
         public SimpleMLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
+            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
         {
-            _mllpStartCharacter = mllpStartCharacter;
-            _mllpFirstEndCharacter = mllpFirstEndCharacter;
-            _mllpLastEndCharacter = mllpLastEndCharacter;
         }
 
-        public override void Decode(IConnection connection, IByteBuf buffer, out List<IByteBuf> decoded)
+        public SimpleMLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength)
+            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, minimiumMessageLength)
         {
-            decoded = new List<IByteBuf>();
-            var obj = Decode(connection, buffer);
-            if (obj != null)
-            {
-                decoded.Add(obj);
-                HeliosTrace.Instance.DecodeSucccess(1);
-            }
         }
 
-        private IByteBuf Decode(IConnection connection, IByteBuf input)
+        protected override IByteBuf Decode(IConnection connection, IByteBuf input)
         {
-            // we at least need to read our start character
-            if (input.ReadableBytes < 1) return null;
+            if (input.ReadableBytes < MinimiumMessageLength + 3) return null;
 
             input.MarkReaderIndex();
 
             // check start byte
-            if (!input.ReadByte().Equals(_mllpStartCharacter))
+            if (!input.ReadByte().Equals(MLLPStartCharacter))
             {
-                throw new CorruptedFrameException(string.Format("Message doesn't start with: {0}", _mllpStartCharacter));
+                throw new CorruptedFrameException(string.Format("Message doesn't start with: {0}", MLLPStartCharacter));
             }
 
             // check if we have a complete frame
-            if (input.GetByte(input.ReadableBytes).Equals(_mllpLastEndCharacter) &&
-                input.GetByte(input.ReadableBytes - 1).Equals(_mllpFirstEndCharacter))
+            if (input.GetByte(input.ReadableBytes).Equals(MLLPLastEndCharacter) &&
+                input.GetByte(input.ReadableBytes - 1).Equals(MLLPFirstEndCharacter))
             {
                 var startMessage = input.ReaderIndex;
                 var actualFrameLength = input.ReadableBytes;
@@ -67,20 +52,18 @@ namespace Helios.MLLP
             return null;
         }
 
-        private static IByteBuf ExtractFrame(IConnection connection, IByteBuf buffer, int index, int length)
-        {
-            var frame = connection.Allocator.Buffer(length);
-            frame.WriteBytes(buffer, index, length);
-            return frame;
-        }
-
         public override IMessageDecoder Clone()
         {
-            return new SimpleMLLPDecoder(_mllpStartCharacter, _mllpFirstEndCharacter, _mllpLastEndCharacter);
+            return new SimpleMLLPDecoder(MLLPStartCharacter, MLLPFirstEndCharacter, MLLPLastEndCharacter);
         }
 
         #region Static methods
 
+        /// <summary>
+        /// Don't use this default provider if you know more about the messages you are going to receive.
+        /// 
+        /// If you are using HL7 encoded message, mininum lenght can be bigger as every message requires MSH section. 
+        /// </summary>
         public static SimpleMLLPDecoder Default
         {
             get
