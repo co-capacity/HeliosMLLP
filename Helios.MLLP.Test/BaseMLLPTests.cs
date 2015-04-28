@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,19 +10,12 @@ using NUnit.Framework;
 
 namespace Helios.MLLP.Test
 {
-    [TestFixture]
-    public class OptimizedDecoderTests
+    public abstract class BaseMLLPTests
     {
-        protected IMessageEncoder Encoder;
         protected IMessageDecoder Decoder;
-        protected IConnection TestConnection = new DummyConnection(UnpooledByteBufAllocator.Default);
-
-        [SetUp]
-        public void SetUp()
-        {
-            Encoder = MLLPEncoder.Default;
-            Decoder = MLLPDecoderOptimized.Default;
-        }
+        protected readonly IConnection TestConnection = new DummyConnection(UnpooledByteBufAllocator.Default);
+        
+        public abstract void SetUp();
 
         [Test]
         public void ShouldDecodeSingleMessage()
@@ -30,13 +23,27 @@ namespace Helios.MLLP.Test
             var binaryContent = Encoding.ASCII.GetBytes("somebytes");
             var expectedBytes = binaryContent.Length;
 
-            var data = ByteBuffer.AllocateDirect(expectedBytes).WriteBytes(binaryContent);
-
-            List<IByteBuf> encodedMessages;
-            Encoder.Encode(TestConnection, data, out encodedMessages);
+            var buffer = ByteBuffer.AllocateDirect(expectedBytes)
+                .WriteByte(11).WriteBytes(binaryContent).WriteByte(28).WriteByte(13);
 
             List<IByteBuf> decodedMessages;
-            Decoder.Decode(TestConnection, encodedMessages[0], out decodedMessages);
+            Decoder.Decode(TestConnection, buffer, out decodedMessages);
+
+            Assert.AreEqual(1, decodedMessages.Count);
+            Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()), String.Format("'{0}' != '{1}'", Encoding.ASCII.GetString(binaryContent), Encoding.ASCII.GetString(decodedMessages[0].ToArray())));
+        }
+
+        [Test]
+        public void CloneShouldGiveSameResult()
+        {
+            var binaryContent = Encoding.ASCII.GetBytes("somebytes");
+            var expectedBytes = binaryContent.Length;
+
+            var buffer = ByteBuffer.AllocateDirect(expectedBytes)
+                .WriteByte(11).WriteBytes(binaryContent).WriteByte(28).WriteByte(13);
+
+            List<IByteBuf> decodedMessages;
+            Decoder.Clone().Decode(TestConnection, buffer, out decodedMessages);
 
             Assert.AreEqual(1, decodedMessages.Count);
             Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()), String.Format("'{0}' != '{1}'", Encoding.ASCII.GetString(binaryContent), Encoding.ASCII.GetString(decodedMessages[0].ToArray())));
@@ -48,20 +55,18 @@ namespace Helios.MLLP.Test
             var binaryContent = Encoding.ASCII.GetBytes("");
             var expectedBytes = binaryContent.Length;
 
-            var data = ByteBuffer.AllocateDirect(expectedBytes).WriteBytes(binaryContent);
-
-            List<IByteBuf> encodedMessages;
-            Encoder.Encode(TestConnection, data, out encodedMessages);
+            var buffer = ByteBuffer.AllocateDirect(expectedBytes)
+                .WriteByte(11).WriteBytes(binaryContent).WriteByte(28).WriteByte(13);
 
             List<IByteBuf> decodedMessages;
-            Decoder.Decode(TestConnection, encodedMessages[0], out decodedMessages);
+            Decoder.Decode(TestConnection, buffer, out decodedMessages);
 
             Assert.AreEqual(1, decodedMessages.Count);
             Assert.IsTrue(binaryContent.SequenceEqual(decodedMessages[0].ToArray()));
         }
 
         [Test]
-        public void ShouldDecodedMultipleMessages()
+        public virtual void ShouldDecodedMultipleMessages()
         {
             var binaryContent1 = Encoding.ASCII.GetBytes("somebytes");
             var binaryContent2 = Encoding.ASCII.GetBytes("moarbytes");
@@ -101,7 +106,7 @@ namespace Helios.MLLP.Test
         }
 
         [Test]
-        public void ShouldProcessReturnFirstMessagesWhenNewFrameNotComplete()
+        public virtual void ShouldProcessReturnFirstMessagesWhenNewFrameNotComplete()
         {
             var binaryContent1 = Encoding.ASCII.GetBytes("somebytes");
             var binaryContent2 = Encoding.ASCII.GetBytes("moarbytes");
@@ -116,6 +121,9 @@ namespace Helios.MLLP.Test
 
             Assert.AreEqual(1, decodedMessages.Count);
             Assert.IsTrue(binaryContent1.SequenceEqual(decodedMessages[0].ToArray()));
+            
+            // simulate compact
+            buffer.Compact();
 
             // complete frame and decode again.
             buffer.WriteByte(28).WriteByte(13);

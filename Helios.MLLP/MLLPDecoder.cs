@@ -12,46 +12,56 @@ namespace Helios.MLLP
     /// </summary>
     public class MLLPDecoder : MLLPDecoderBase
     {
+       private int _skipBytes;
+
         public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
-            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
+            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
         {
         }
 
 
-        public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength) : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, minimiumMessageLength)
+        public MLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength)
+            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, minimiumMessageLength)
         {
         }
 
         protected override IByteBuf Decode(IConnection connection, IByteBuf input)
         {
-            // we at least need to read our controll characters
+            // we at least need to read our controll characters and minimum message length
             if (input.ReadableBytes < MinimiumMessageLength + 3) return null;
 
-            // mark the start of our frame
-            input.MarkReaderIndex();
-
             // check start byte
-            if (!input.ReadByte().Equals(MLLPStartCharacter))
+            if (!input.GetByte(input.ReaderIndex).Equals(MLLPStartCharacter))
             {
                 throw new CorruptedFrameException(string.Format("Message doesn't start with: {0}", MLLPStartCharacter));
             }
 
+            // mark the start of our frame and skip start character
+            input.MarkReaderIndex();
+            input.SkipBytes(1);
+
+            // mark start of the message
             var startMessage = input.ReaderIndex;
             var length = input.ReadableBytes;
 
-            // search for our end characters, this is performance hotspot 
-            // TODO: first we should skip MinimiumMessageLength
-            // TODO: find other ways to speed up this search
-            for (var i = 0; i < length; i++)
+            // skip already read bytes or skip minimum length bits
+            input.SkipBytes(_skipBytes > 0 ? _skipBytes : MinimiumMessageLength);
+
+            // search for our end characters
+            for (var i = _skipBytes; i < length; i++)
             {
                 if (input.ReadByte().Equals(MLLPFirstEndCharacter) && 
                     input.GetByte(input.ReaderIndex).Equals(MLLPLastEndCharacter))
                 {
                     var frame = ExtractFrame(connection, input, startMessage, i);
                     input.SkipBytes(1); // advance over our last character
+                    _skipBytes = 0; // reset
                     return frame;
                 }
             }
+
+            // set skipBytes to current ReaderIndex
+            _skipBytes = input.ReaderIndex - startMessage - 1;
 
             // we have to reset as our frame could get compacted away.
             input.ResetReaderIndex();

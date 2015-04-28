@@ -9,17 +9,13 @@ namespace Helios.MLLP
 {
     public abstract class MLLPDecoderBase : MessageDecoderBase
     {
-        protected byte MLLPFirstEndCharacter;
-        protected byte MLLPLastEndCharacter;
-        protected byte MLLPStartCharacter;
+        protected readonly byte MLLPFirstEndCharacter;
+        protected readonly byte MLLPLastEndCharacter;
+        protected readonly byte MLLPStartCharacter;
         protected readonly int MinimiumMessageLength;
 
-        protected MLLPDecoderBase(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
-            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
-        {
-        }
-
-        protected MLLPDecoderBase(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength)
+        protected MLLPDecoderBase(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter,
+            int minimiumMessageLength = 0)
         {
             if (minimiumMessageLength < 0)
             {

@@ -23,7 +23,7 @@ namespace Helios.MLLP.Performance.Tests
             const long numIterations = 10000;
 
             // Define the operation title names.
-            String[] operationNames = {"MLLPEncoder", "SimpleMLLPDecoder", "MLLPDecoder", "OptimizedDecoder"};
+            String[] operationNames = {"MLLPEncoder", "SimpleMLLPDecoder", "MLLPDecoder"};
 
             // create the message
             var binaryContent = Encoding.ASCII.GetBytes(new String('c', messageSize-3));
@@ -41,10 +41,6 @@ namespace Helios.MLLP.Performance.Tests
 
             // default
             var decoder = MLLPDecoder.Default;
-
-            // optimized
-            var optimized = MLLPDecoderOptimized.Default;
-
 
             for (int operation = 0; operation <= 3; operation++)
             {
@@ -110,20 +106,6 @@ namespace Helios.MLLP.Performance.Tests
                             timePerParse = Stopwatch.StartNew();
 
                             splitLargeMessage(decoder, TestConnection, msgEncoded);
-
-                            // Stop the timer, and save the 
-                            // elapsed ticks for the operation.
-                            timePerParse.Stop();
-                            ticksThisTime = timePerParse.ElapsedTicks;
-                            break;
-                        case 3:
-                            // Parse an invalid value using 
-                            // a try-catch statement. 
-
-                            // Start a new stopwatch timer.
-                            timePerParse = Stopwatch.StartNew();
-
-                            splitLargeMessage(optimized, TestConnection, msgEncoded);
 
                             // Stop the timer, and save the 
                             // elapsed ticks for the operation.

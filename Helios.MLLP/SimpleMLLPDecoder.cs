@@ -12,7 +12,13 @@ namespace Helios.MLLP
     /// </summary>
     public class SimpleMLLPDecoder : MLLPDecoderBase
     {
-        public SimpleMLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter) : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter)
+        public SimpleMLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter)
+            : this(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, 0)
+        {
+        }
+
+        public SimpleMLLPDecoder(byte mllpStartCharacter, byte mllpFirstEndCharacter, byte mllpLastEndCharacter, int minimiumMessageLength)
+            : base(mllpStartCharacter, mllpFirstEndCharacter, mllpLastEndCharacter, minimiumMessageLength)
         {
         }
 
@@ -53,6 +59,11 @@ namespace Helios.MLLP
 
         #region Static methods
 
+        /// <summary>
+        /// Don't use this default provider if you know more about the messages you are going to receive.
+        /// 
+        /// If you are using HL7 encoded message, mininum lenght can be bigger as every message requires MSH section. 
+        /// </summary>
         public static SimpleMLLPDecoder Default
         {
             get
