@@ -1,25 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>Helios.MLLP</id>
+        <id>Helios.MLLP.NET35</id>
         <version>0.0.0</version>
         <authors>Co-Capacity</authors>
         <owners>Co-Capacity</owners>
         <licenseUrl>https://github.com/co-capacity/HeliosMLLP/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/co-capacity/HeliosMLLP</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Helios MLLP encoder/decoders</description>
+        <description>Helios MLLP encoder/decoders + (NET35 Support)</description>
         <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
         <copyright>Copyright 2015</copyright>
         <language>en-US</language>
         <dependencies>
-            <dependency id="Helios" version="1.4.0" />
+            <dependency id="Helios.NET35" version="1.4.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="..\Helios.MLLP.NET40\bin\Release\Helios.MLLP.NET40.dll" target="lib\net40\Helios.MLLP.NET40.dll" />
-        <file src="..\Helios.MLLP.NET40\bin\Release\Helios.MLLP.NET40.pdb" target="lib\net40\Helios.MLLP.NET40.pdb" />
-        <file src="bin\Release\Helios.MLLP.dll" target="lib\net45\Helios.MLLP.dll" />
-        <file src="bin\Release\Helios.MLLP.pdb" target="lib\net45\Helios.MLLP.pdb" />
+        <file src="bin\Release\Helios.MLLP.NET35.dll" target="lib\net35\Helios.MLLP.NET35.dll" />
     </files>
 </package>

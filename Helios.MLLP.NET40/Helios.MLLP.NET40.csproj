@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F0C05FE3-4F71-4B86-A60E-9F6760D34183}</ProjectGuid>
+    <ProjectGuid>{C61E055A-D95A-4540-9EA7-FC2047CE010B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Helios.MLLP</RootNamespace>
-    <AssemblyName>Helios.MLLP</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Helios.MLLP.NET40</RootNamespace>
+    <AssemblyName>Helios.MLLP.NET40</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,22 +31,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Helios">
-      <HintPath>..\packages\Helios.1.4.0\lib\net45\Helios.dll</HintPath>
+    <Reference Include="Helios.NET40">
+      <HintPath>..\packages\Helios.1.4.0\lib\net40\Helios.NET40.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MLLPDecoderBase.cs" />
-    <Compile Include="MLLPEncoder.cs" />
-    <Compile Include="MLLPDecoder.cs" />
-    <Compile Include="SimpleMLLPDecoder.cs" />
+    <Compile Include="..\Helios.MLLP\MLLPDecoder.cs">
+      <Link>MLLPDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\Helios.MLLP\MLLPDecoderBase.cs">
+      <Link>MLLPDecoderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Helios.MLLP\MLLPEncoder.cs">
+      <Link>MLLPEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\Helios.MLLP\SimpleMLLPDecoder.cs">
+      <Link>SimpleMLLPDecoder.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Helios.MLLP.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
