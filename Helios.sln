@@ -4,12 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP", "Helios.MLLP\Helios.MLLP.csproj", "{F0C05FE3-4F71-4B86-A60E-9F6760D34183}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C61E055A-D95A-4540-9EA7-FC2047CE010B} = {C61E055A-D95A-4540-9EA7-FC2047CE010B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.Test", "Helios.MLLP.Test\Helios.MLLP.Test.csproj", "{8CEE6E64-A672-4FF8-AF95-2ECC02EAB31B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.Performance.Tests", "Helios.MLLP.Performance.Tests\Helios.MLLP.Performance.Tests.csproj", "{A855FDF9-3B09-4832-ADBC-EC63F41444D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.NET35", "Helios.MLLP.NET35\Helios.MLLP.NET35.csproj", "{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.NET40", "Helios.MLLP.NET40\Helios.MLLP.NET40.csproj", "{C61E055A-D95A-4540-9EA7-FC2047CE010B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61E055A-D95A-4540-9EA7-FC2047CE010B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61E055A-D95A-4540-9EA7-FC2047CE010B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61E055A-D95A-4540-9EA7-FC2047CE010B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61E055A-D95A-4540-9EA7-FC2047CE010B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
