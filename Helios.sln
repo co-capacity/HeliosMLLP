@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.Test", "Helios.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.Performance.Tests", "Helios.MLLP.Performance.Tests\Helios.MLLP.Performance.Tests.csproj", "{A855FDF9-3B09-4832-ADBC-EC63F41444D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios.MLLP.NET35", "Helios.MLLP.NET35\Helios.MLLP.NET35.csproj", "{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A855FDF9-3B09-4832-ADBC-EC63F41444D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A855FDF9-3B09-4832-ADBC-EC63F41444D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A855FDF9-3B09-4832-ADBC-EC63F41444D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE491FC2-4BDD-46CA-B088-87CDCC53CBFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
