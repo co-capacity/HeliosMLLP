@@ -19,19 +19,19 @@ namespace Helios.MLLP.Performance.Tests
 
         private static void TimeOperations(int messageSize = 1024)
         {
-            long nanosecPerTick = (1000L * 1000L * 1000L) / Stopwatch.Frequency;
+            var nanosecPerTick = 1000L * 1000L * 1000L / Stopwatch.Frequency;
             const long numIterations = 10000;
 
             // Define the operation title names.
-            String[] operationNames = {"MLLPEncoder", "SimpleMLLPDecoder", "MLLPDecoder"};
+            string[] operationNames = {"MLLPEncoder", "SimpleMLLPDecoder", "MLLPDecoder"};
 
             // create the message
-            var binaryContent = Encoding.ASCII.GetBytes(new String('c', messageSize-3));
+            var binaryContent = Encoding.ASCII.GetBytes(new string('c', messageSize-3));
             var msgRaw = ByteBuffer.AllocateDirect(binaryContent.Length).WriteBytes(binaryContent);
             var msgEncoded = ByteBuffer.AllocateDirect(binaryContent.Length+3).WriteByte(11).WriteBytes(binaryContent).WriteByte(28).WriteByte(13);
 
             // create test connection
-            IConnection TestConnection = new DummyConnection(UnpooledByteBufAllocator.Default);
+            IConnection testConnection = new DummyConnection(UnpooledByteBufAllocator.Default);
 
             // Encoder = MLLP.MLLPEncoder.Default;
             var encoder = MLLPEncoder.Default;
@@ -48,18 +48,19 @@ namespace Helios.MLLP.Performance.Tests
                 long numTicks = 0;
                 long numRollovers = 0;
                 long maxTicks = 0;
-                long minTicks = Int64.MaxValue;
-                int indexFastest = -1;
-                int indexSlowest = -1;
+                var minTicks = Int64.MaxValue;
+                var indexFastest = -1;
+                var indexSlowest = -1;
                 long milliSec = 0;
 
-                Stopwatch time10kOperations = Stopwatch.StartNew();
+                // ReSharper disable once InconsistentNaming
+                var time10kOperations = Stopwatch.StartNew();
 
                 // Run the current operation 10001 times. 
                 // The first execution time will be tossed 
                 // out, since it can skew the average time. 
 
-                for (int i = 0; i <= numIterations; i++)
+                for (var i = 0; i <= numIterations; i++)
                 {
                     long ticksThisTime = 0;
                     Stopwatch timePerParse;
@@ -76,7 +77,7 @@ namespace Helios.MLLP.Performance.Tests
                             timePerParse = Stopwatch.StartNew();
 
                             List<IByteBuf> encodedMessages;
-                            encoder.Encode(TestConnection, msgRaw, out encodedMessages);
+                            encoder.Encode(testConnection, msgRaw, out encodedMessages);
 
                             // Stop the timer, and save the 
                             // elapsed ticks for the operation.
@@ -91,7 +92,7 @@ namespace Helios.MLLP.Performance.Tests
                             // Start a new stopwatch timer.
                             timePerParse = Stopwatch.StartNew();
 
-                            splitLargeMessage(simple, TestConnection, msgEncoded);
+                            SplitLargeMessage(simple, testConnection, msgEncoded);
 
                             // Stop the timer, and save the 
                             // elapsed ticks for the operation.
@@ -105,14 +106,12 @@ namespace Helios.MLLP.Performance.Tests
                             // Start a new stopwatch timer.
                             timePerParse = Stopwatch.StartNew();
 
-                            splitLargeMessage(decoder, TestConnection, msgEncoded);
+                            SplitLargeMessage(decoder, testConnection, msgEncoded);
 
                             // Stop the timer, and save the 
                             // elapsed ticks for the operation.
                             timePerParse.Stop();
                             ticksThisTime = timePerParse.ElapsedTicks;
-                            break;
-                        default:
                             break;
                     }
 
@@ -171,7 +170,7 @@ namespace Helios.MLLP.Performance.Tests
             }
         }
 
-        private static void splitLargeMessage(IMessageDecoder decoder, IConnection connection, IByteBuf buffer)
+        private static void SplitLargeMessage(IMessageDecoder decoder, IConnection connection, IByteBuf buffer)
         {
             var readable = buffer.ReadableBytes;
             var upper = readable / 1024;
