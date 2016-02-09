@@ -134,14 +134,17 @@ namespace Helios.MLLP.Test
         }
 
         [Test]
-        [ExpectedException(typeof(CorruptedFrameException))]
+        //[ExpectedException(typeof(CorruptedFrameException))]
         public void ShouldThrowExceptionWhenDecodingIncorrectFrameStart()
         {
             var binaryContent = Encoding.UTF8.GetBytes("somebytes");
             var buffer = ByteBuffer.AllocateDirect(binaryContent.Length).WriteBytes(binaryContent);
 
             List<IByteBuf> decodedMessages;
-            Decoder.Decode(TestConnection, buffer, out decodedMessages);
+            Assert.Throws<CorruptedFrameException>(() =>
+            {
+                Decoder.Decode(TestConnection, buffer, out decodedMessages);
+            });
         }
     }
 }

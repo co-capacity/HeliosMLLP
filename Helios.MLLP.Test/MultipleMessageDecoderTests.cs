@@ -13,10 +13,13 @@ namespace Helios.MLLP.Test
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MinimumMessageLengthShouldBePositive()
         {
-            var obj = new MLLPDecoder(Convert.ToByte((char) 11), Convert.ToByte((char) 28), Convert.ToByte((char) 13), -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                var obj = new MLLPDecoder(Convert.ToByte((char)11), Convert.ToByte((char)28), Convert.ToByte((char)13), -1);
+            });
         }
     }
 }
